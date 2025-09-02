@@ -76,7 +76,7 @@ class _LoginViewState extends State<LoginView> {
       SnackBar(content: Text(message), backgroundColor: Colors.red),
     );
   }
-
+/*
   Future<void> register() async {
     setState(() => loading = true);
     try {
@@ -92,6 +92,58 @@ class _LoginViewState extends State<LoginView> {
       setState(() => loading = false);
     }
   }
+  */
+
+  Future<void> register() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      _showMessage("Preencha todos os campos.");
+      return;
+    }
+
+    if (!email.contains("@") || !email.contains(".")) {
+      _showMessage("Digite um email válido.");
+      return;
+    }
+
+    setState(() => loading = true);
+    try {
+      // 🔹 Tenta criar a conta
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // 🔹 Se conseguiu criar → já loga e vai pra tela principal
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => UsinaListView()),
+      );
+    } on FirebaseAuthException catch (e) {
+      String message;
+      switch (e.code) {
+        case "email-already-in-use":
+          message = "Já existe uma conta com esse email. Clique em Login para entrar.";
+          break;
+        case "weak-password":
+          message = "A senha é muito fraca. Use pelo menos 6 caracteres.";
+          break;
+        case "invalid-email":
+          message = "O email informado é inválido.";
+          break;
+        default:
+          message = "Erro ao criar conta: ${e.message}";
+      }
+      _showMessage(message);
+    } catch (e) {
+      _showMessage("Erro inesperado: $e");
+    } finally {
+      setState(() => loading = false);
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
