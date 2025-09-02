@@ -15,7 +15,7 @@ class _SplashViewState extends State<SplashView> {
     super.initState();
 
     // ⏳ Aguarda 2 segundos e decide a rota
-    Timer(const Duration(seconds: 2), _checkAuth);
+    Timer(const Duration(seconds: 3), _checkAuth);
   }
 
   void _checkAuth() {
@@ -37,7 +37,7 @@ class _SplashViewState extends State<SplashView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF007C6C), // Verde Vale
+      backgroundColor:  Colors.white, // Verde Vale
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -51,14 +51,14 @@ class _SplashViewState extends State<SplashView> {
             const Text(
               "Checklist Raspadores",
               style: TextStyle(
-                color: Colors.white,
+                color:  Color(0xFF007C6C),
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 32),
             const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              valueColor: AlwaysStoppedAnimation<Color>( Color(0xFF007C6C)),
             ),
           ],
         ),

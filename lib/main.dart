@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart'; // 👈 gerado automaticamente
 import 'views/usina_list_view.dart';
-
+/*
 void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,6 +42,40 @@ class ChecklistApp extends StatelessWidget {
           return LoginView(); // usuário não logado
         },
       ),
+    );
+  }
+}
+
+*/
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'views/splash_view.dart'; // 👈 importa a SplashView
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  runApp(ChecklistApp());
+}
+
+class ChecklistApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Checklist Raspadores',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      builder: (context, child) {
+        return Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 800),
+            child: child,
+          ),
+        );
+      },
+      home: SplashView(), // 👈 sempre começa pela Splash
     );
   }
 }
