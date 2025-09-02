@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "184980334280",
+    "project_id": "check-raspadores",
+    "storage_bucket": "check-raspadores.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:184980334280:android:494406534f72ef261d27fd",
+        "android_client_info": {
+          "package_name": "com.fns.check_raspadores"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDPqXPZj4FtgSVSdSQFyC7RYJOV6-qn2k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

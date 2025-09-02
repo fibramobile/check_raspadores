@@ -1,0 +1,219 @@
+{
+  "Usina 5": {
+    "Pátio de Finos": [
+      { "tag": "5PA5M16" },
+      { "tag": "5PA6A" },
+      { "tag": "5PA6B" },
+      { "tag": "5PA7" },
+      { "tag": "5PA8" },
+      { "tag": "5PA9" }
+    ],
+    "Moagem": [
+      { "tag": "5M1" },
+      { "tag": "5M1C" },
+      { "tag": "5M4A" },
+      { "tag": "5M4B" },
+      { "tag": "5M4C" }
+    ],
+    "Filtragem": [
+      { "tag": "5F5" }
+    ],
+    "Mistura": [
+      { "tag": "5P1" },
+      { "tag": "5P1A" },
+      { "tag": "5P2" },
+      { "tag": "5PR10" },
+      { "tag": "5PR11" },
+      { "tag": "5P6A" },
+      { "tag": "5P6B" },
+      { "tag": "5P8A" },
+      { "tag": "5P8B" },
+      { "tag": "5P9A" },
+      { "tag": "5P9B" },
+      { "tag": "5P10" },
+      { "tag": "5PR2" },
+      { "tag": "5PR3" },
+      { "tag": "5PR5" },
+      { "tag": "5PR6" },
+      { "tag": "5PR7" },
+      { "tag": "5PR8" },
+      { "tag": "5PR9" }
+    ],
+    "Pelotamento": [
+      { "tag": "5P12" }
+    ],
+    "Queima": [
+      { "tag": "5Q1" }
+    ],
+    "Peneiramento": [
+      { "tag": "5Q5A" }
+    ],
+    "Pátio de Pelotas": [
+      { "tag": "5PP1" }
+    ]
+  },
+  "Usina 6": {
+    "Pátio de Finos": [
+      { "tag": "6PA1" }
+    ],
+    "Moagem": [
+      { "tag": "6M4A" },
+      { "tag": "6M4B" }
+    ],
+    "Filtragem": [
+      { "tag": "6F5" }
+    ],
+    "Mistura": [
+      { "tag": "6P1" },
+      { "tag": "6P1A" },
+      { "tag": "6P2" },
+      { "tag": "6PR10" },
+      { "tag": "6PR11" },
+      { "tag": "6P6A" },
+      { "tag": "6P6B" },
+      { "tag": "6P8A" },
+      { "tag": "6P8B" },
+      { "tag": "6P9A" },
+      { "tag": "6P9B" },
+      { "tag": "6P10" },
+      { "tag": "6PR2" },
+      { "tag": "6PR3" },
+      { "tag": "6PR5" },
+      { "tag": "6PR6" },
+      { "tag": "6PR7" },
+      { "tag": "6PR8" },
+      { "tag": "6PR9" }
+    ],
+    "Pelotamento": [
+      { "tag": "6P12" },
+      { "tag": "6P15" },
+      { "tag": "6P16" },
+      { "tag": "6P16A" },
+      { "tag": "6P19A" },
+      { "tag": "6P19B" },
+      { "tag": "6P19C" },
+      { "tag": "6P19D" },
+      { "tag": "6P19E" },
+      { "tag": "6P19F" },
+      { "tag": "6P19G" },
+      { "tag": "6P21A" },
+      { "tag": "6P21B" },
+      { "tag": "6P21C" },
+      { "tag": "6P21D" },
+      { "tag": "6P21E" },
+      { "tag": "6P21F" },
+      { "tag": "6P21G" },
+      { "tag": "6P23A" },
+      { "tag": "6P23B" },
+      { "tag": "6P23F" },
+      { "tag": "6P26A" },
+      { "tag": "6P26B" },
+      { "tag": "6P26C" },
+      { "tag": "6P27A" },
+      { "tag": "6P27B" },
+      { "tag": "6P27C" },
+      { "tag": "6P27D" },
+      { "tag": "6P28" },
+      { "tag": "6P29" },
+      { "tag": "6P30" },
+      { "tag": "6P33" },
+      { "tag": "6P34" },
+      { "tag": "6P35" },
+      { "tag": "6P36" },
+      { "tag": "6P37" }
+    ],
+    "Forno": [
+      { "tag": "6R8" },
+      { "tag": "6R2" },
+      { "tag": "6R3" },
+      { "tag": "6R4" }
+    ],
+    "Peneira": [
+      { "tag": "6Q1A" },
+      { "tag": "6Q5A" },
+      { "tag": "6Q5B" },
+      { "tag": "6Q63" },
+      { "tag": "6Q64" },
+      { "tag": "6Q66" }
+    ],
+    "Pátio Pelotas": [
+      { "tag": "6PP2" },
+      { "tag": "6PP3" },
+      { "tag": "6PP4" },
+      { "tag": "6PP6" },
+      { "tag": "6PP7" },
+      { "tag": "6R17" },
+      { "tag": "6R18" },
+      { "tag": "6R19" },
+      { "tag": "6R20" }
+    ]
+  },
+  "Usina 7": {
+    "Pátio de Finos": [
+      { "tag": "7PA5" },
+      { "tag": "7PA6" },
+      { "tag": "7PA7" }
+    ],
+    "Moagem": [
+      { "tag": "7M1" },
+      { "tag": "7M4A" },
+      { "tag": "7M4B" },
+      { "tag": "7M4C" }
+    ],
+    "Filtragem": [
+      { "tag": "7F5A" },
+      { "tag": "7F5B" }
+    ],
+    "Mistura": [
+      { "tag": "7P5A" },
+      { "tag": "7P5B" },
+      { "tag": "7P6A" },
+      { "tag": "7P6B" }
+    ],
+    "Pelotamento": [
+      { "tag": "7P12" },
+      { "tag": "7P15" },
+      { "tag": "7P16" },
+      { "tag": "7P19A" },
+      { "tag": "7P19B" },
+      { "tag": "7P19C" },
+      { "tag": "7P19D" },
+      { "tag": "7P19E" },
+      { "tag": "7P19F" },
+      { "tag": "7P19G" },
+      { "tag": "7P21A" },
+      { "tag": "7P21B" },
+      { "tag": "7P21C" },
+      { "tag": "7P21D" },
+      { "tag": "7P21E" },
+      { "tag": "7P21F" },
+      { "tag": "7P21G" },
+      { "tag": "7P23" },
+      { "tag": "7P24" },
+      { "tag": "7P26A" },
+      { "tag": "7P26F" },
+      { "tag": "7P26G" },
+      { "tag": "7P28" },
+      { "tag": "7P30" },
+      { "tag": "7P34" },
+      { "tag": "7P35" },
+      { "tag": "7P37" },
+      { "tag": "7P39" }
+    ],
+    "Forno": [
+      { "tag": "7R8" },
+      { "tag": "7R2" },
+      { "tag": "7R3" },
+      { "tag": "7R4" }
+    ],
+    "Peneira": [
+      { "tag": "7Q17" }
+    ],
+    "Pátio Pelotas": [
+      { "tag": "7PP1" },
+      { "tag": "7PP4" },
+      { "tag": "7PP6" },
+      { "tag": "7PP7" }
+    ]
+  }
+}
