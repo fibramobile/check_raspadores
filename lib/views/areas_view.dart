@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/firebase_checklist_service.dart';
+import 'dashboard_view.dart';
 import 'equipamentos_view.dart';
 import 'relatorio_view.dart'; // 🔹 importa a tela de relatório
 
@@ -27,6 +28,18 @@ class AreasView extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (_) => RelatorioView(usina: usina),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.dashboard, color: Colors.white),
+            tooltip: "DashBoard",
+            onPressed: () async {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => DashboardView(usina: usina),
                 ),
               );
             },

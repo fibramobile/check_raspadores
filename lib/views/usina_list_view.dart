@@ -1,3 +1,4 @@
+import 'package:check_raspadores/views/dashboard_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'areas_view.dart';
