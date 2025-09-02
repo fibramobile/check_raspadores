@@ -45,7 +45,7 @@ class RelatorioView extends StatelessWidget {
             headers: ["Local/Área", "TAG", "Última Atualização", "R1", "R2", "R3"],
             data: equipamentos.map((eq) {
               return [
-               // eq.area, // 👈 nova coluna
+                eq.area, // 👈 nova coluna
                 eq.tag,
                 eq.updatedAt != null
                     ? "${eq.updatedAt!.day.toString().padLeft(2, '0')}/"

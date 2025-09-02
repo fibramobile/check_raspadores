@@ -1,61 +1,4 @@
 import 'package:flutter/material.dart';
-/*
-class Equipamento {
-  final String tag;
-
-  bool raspadorPrimarioNA;
-  double raspadorPrimarioPressao;
-
-  bool raspadorSecundarioNA;
-  double raspadorSecundarioPressao;
-
-  bool reservatorioNA;
-  double reservatorioPressao;
-
-  Equipamento({
-    required this.tag,
-    this.raspadorPrimarioNA = false,
-    this.raspadorPrimarioPressao = 0.0,
-    this.raspadorSecundarioNA = false,
-    this.raspadorSecundarioPressao = 0.0,
-    this.reservatorioNA = false,
-    this.reservatorioPressao = 0.0,
-  });
-
-  /// Status do raspador primário
-  Color get statusPrimario {
-    if (raspadorPrimarioNA) return Colors.grey;
-    if (raspadorPrimarioPressao < 0.5) return Colors.red;
-    if (raspadorPrimarioPressao > 1.0) return Colors.yellow;
-    return Colors.green;
-  }
-
-  /// Status do raspador secundário
-  Color get statusSecundario {
-    if (raspadorSecundarioNA) return Colors.grey;
-    if (raspadorSecundarioPressao < 0.5) return Colors.red;
-    if (raspadorSecundarioPressao > 1.0) return Colors.yellow;
-    return Colors.green;
-  }
-
-  /// Status do reservatório
-  Color get statusReservatorio {
-    if (reservatorioNA) return Colors.grey;
-    if (reservatorioPressao < 1.0) return Colors.red;
-    if (reservatorioPressao > 4.0) return Colors.yellow;
-    return Colors.green;
-  }
-
-  /// Considera equipamento OK se todos principais parâmetros estão bons
-  bool get statusOk =>
-      (statusPrimario == Colors.green || raspadorPrimarioNA) &&
-          (statusSecundario == Colors.green || raspadorSecundarioNA) &&
-          (statusReservatorio == Colors.green || reservatorioNA);
-}
-*/
-
-import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Equipamento {
@@ -143,7 +86,7 @@ class Equipamento {
 
   factory Equipamento.fromJson(Map<String, dynamic> json) {
     return Equipamento(
-      tag: json["tag"],
+      tag: json["tag"]?? "-",
       area: json["area"] ?? "-",
       raspadorPrimarioNA: json["raspadorPrimarioNA"] ?? false,
       raspadorPrimarioPressao: (json["raspadorPrimarioPressao"] ?? 0.0).toDouble(),

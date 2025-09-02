@@ -9,98 +9,6 @@ class AreasView extends StatelessWidget {
 
   AreasView({required this.usina, required this.service});
 
-  /*
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Áreas - $usina"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.report, color: Colors.red),
-            tooltip: "Relatório de críticos",
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => RelatorioView(usina: usina),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-      body: StreamBuilder<List<String>>(
-        stream: service.getAreas(usina),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final areas = snapshot.data!;
-          return ListView.builder(
-            itemCount: areas.length,
-            padding: const EdgeInsets.all(12),
-            itemBuilder: (context, index) {
-              final area = areas[index];
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => EquipamentosView(
-                        usina: usina,
-                        area: area,
-                        service: service,
-                      ),
-                    ),
-                  );
-                },
-                child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: 6),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 6,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.orangeAccent.withOpacity(0.1),
-                        radius: 22,
-                        child: const Icon(Icons.apartment, color: Colors.orange),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Text(
-                          area,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ),
-                      Icon(Icons.arrow_forward_ios, size: 18, color: Colors.grey[600]),
-                    ],
-                  ),
-                ),
-              );
-            },
-          );
-
-        },
-      ),
-    );
-  }
-  */
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -192,20 +100,6 @@ class AreasView extends StatelessWidget {
           );
         },
       ),
-      /*
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFFFDB913), // amarelo Vale
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => RelatorioView(usina: usina),
-            ),
-          );
-        },
-        child: const Icon(Icons.picture_as_pdf, color: Colors.white),
-      ),
-      */
     );
   }
 }

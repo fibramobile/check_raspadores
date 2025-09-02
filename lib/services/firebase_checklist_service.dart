@@ -16,19 +16,6 @@ class FirebaseChecklistService {
       return snapshot.docs.map((doc) => doc.id).toList();
     });
   }
-/*
-  /// Retorna lista de áreas de uma usina
-  Stream<List<String>> getAreas(String usina) {
-    return _db
-        .collection("usinas")
-        .doc(usina)
-        .collection("areas")
-        .snapshots()
-        .map((snapshot) {
-      return snapshot.docs.map((doc) => doc.id).toList();
-    });
-  }
-  */
 
   /// Retorna lista de áreas de uma usina na ordem definida
   Stream<List<String>> getAreas(String usina) {
@@ -127,6 +114,7 @@ class FirebaseChecklistService {
   }
 
   /// Busca TODOS os equipamentos de uma usina (snapshot único, sem tempo real)
+  /*
   Future<List<Equipamento>> getEquipamentosPorUsinaOnce(String usina) async {
     final areasSnap =
     await _db.collection("usinas").doc(usina).collection("areas").get();
@@ -149,6 +137,36 @@ class FirebaseChecklistService {
     }
 
     return todos;
+  }
+*/
+  Future<List<Equipamento>> getEquipamentosPorUsinaOnce(String usina) async {
+    final usinaRef = FirebaseFirestore.instance.collection("usinas").doc(usina);
+    final areasSnapshot = await usinaRef.collection("areas").get();
+
+    List<Equipamento> equipamentos = [];
+
+    for (var areaDoc in areasSnapshot.docs) {
+      final equipamentosSnapshot = await areaDoc.reference.collection("equipamentos").get();
+      for (var eq in equipamentosSnapshot.docs) {
+        final equipamento = Equipamento.fromJson(eq.data());
+        equipamentos.add(
+          Equipamento(
+            tag: equipamento.tag,
+            area: areaDoc.id, // 👈 usa o nome do doc da área como área
+            raspadorPrimarioNA: equipamento.raspadorPrimarioNA,
+            raspadorPrimarioPressao: equipamento.raspadorPrimarioPressao,
+            raspadorSecundarioNA: equipamento.raspadorSecundarioNA,
+            raspadorSecundarioPressao: equipamento.raspadorSecundarioPressao,
+            raspadorTerceiroNA: equipamento.raspadorTerceiroNA,
+            raspadorTerceiroPressao: equipamento.raspadorTerceiroPressao,
+            reservatorioNA: equipamento.reservatorioNA,
+            reservatorioPressao: equipamento.reservatorioPressao,
+            updatedAt: equipamento.updatedAt,
+          ),
+        );
+      }
+    }
+    return equipamentos;
   }
 
 

@@ -11,73 +11,7 @@ class _LoginViewState extends State<LoginView> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   bool loading = false;
-/*
-  Future<void> login() async {
-    setState(() => loading = true);
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Erro: $e")),
-      );
-    } finally {
-      setState(() => loading = false);
-    }
-  }
-  */
-/*
-  Future<void> login() async {
-    final email = emailController.text.trim();
-    final password = passwordController.text.trim();
 
-    // 🔹 validações simples antes do Firebase
-    if (email.isEmpty || password.isEmpty) {
-      _showMessage("Preencha todos os campos.");
-      return;
-    }
-
-    if (!email.contains("@") || !email.contains(".")) {
-      _showMessage("Digite um email válido.");
-      return;
-    }
-    setState(() => loading = true);
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-    } on FirebaseAuthException catch (e) {
-      String message;
-      switch (e.code) {
-        case "invalid-email":
-          message = "O email informado é inválido.";
-          break;
-        case "user-not-found":
-          message = "Usuário não encontrado. Verifique o email.";
-          break;
-        case "wrong-password":
-          message = "Senha incorreta. Tente novamente.";
-          break;
-        case "user-disabled":
-          message = "Usuário desativado. Contate o administrador.";
-          break;
-        case "invalid-credential": // 🔹 esse é o que você viu no print
-          message = "Senha incorreta ou credencial inválida.";
-          break;
-        default:
-          message = "Erro ao entrar: ${e.message}";
-      }
-      _showMessage(message);
-    } catch (e) {
-      _showMessage("Erro inesperado: $e");
-    } finally {
-      setState(() => loading = false);
-    }
-  }
-  */
   Future<void> login() async {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
