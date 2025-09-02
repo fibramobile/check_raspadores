@@ -135,7 +135,7 @@ class _EquipamentoTileState extends State<EquipamentoTile> {
             ),
             Expanded(
               child: Text(
-                "Última atualização\n ${widget.formatDate(eq.updatedAt)}",
+                "Atualizado\n ${widget.formatDate(eq.updatedAt)}",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 12,
@@ -149,10 +149,10 @@ class _EquipamentoTileState extends State<EquipamentoTile> {
               children: [
                 const Text("R1 "),
                 Icon(Icons.circle, size: 18, color: eq.statusPrimario),
-                const SizedBox(width: 12),
+                const SizedBox(width: 8),
                 const Text("R2 "),
                 Icon(Icons.circle, size: 18, color: eq.statusSecundario),
-                const SizedBox(width: 12),
+                const SizedBox(width: 8),
                 const Text("R3 "),
                 Icon(Icons.circle, size: 18, color: eq.statusTerceiro),
               ],
@@ -200,41 +200,46 @@ class _EquipamentoTileState extends State<EquipamentoTile> {
           const SizedBox(height: 12),
           Align(
             alignment: Alignment.centerRight,
-            child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF007C6C),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                padding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              ),
-              icon: const Icon(Icons.save, color: Colors.white, size: 18),
-              label: const Text(
-                "Salvar",
-                style:
-                TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-              onPressed: () {
-                eq.raspadorPrimarioNA = primarioNA;
-                eq.raspadorPrimarioPressao = primarioPressao;
-                eq.raspadorSecundarioNA = secundarioNA;
-                eq.raspadorSecundarioPressao = secundarioPressao;
-                eq.raspadorTerceiroNA = terceiroNA;
-                eq.raspadorTerceiroPressao = terceiroPressao;
-                eq.reservatorioNA = reservatorioNA;
-                eq.reservatorioPressao = reservatorioPressao;
-                eq.updatedAt = DateTime.now();
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 12), // espaço extra no rodapé
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFF3A712),//const Color(0xFF007C6C),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                ),
+                icon: const Icon(Icons.save, color: Colors.white, size: 18),
+                label: const Text(
+                  "Salvar",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onPressed: () {
+                  eq.raspadorPrimarioNA = primarioNA;
+                  eq.raspadorPrimarioPressao = primarioPressao;
+                  eq.raspadorSecundarioNA = secundarioNA;
+                  eq.raspadorSecundarioPressao = secundarioPressao;
+                  eq.raspadorTerceiroNA = terceiroNA;
+                  eq.raspadorTerceiroPressao = terceiroPressao;
+                  eq.reservatorioNA = reservatorioNA;
+                  eq.reservatorioPressao = reservatorioPressao;
+                  eq.updatedAt = DateTime.now();
 
-                widget.service.salvarChecklist(widget.usina, widget.area, eq);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Checklist salvo!")),
-                );
-                // 🔹 Fecha o expansivo após salvar
-                _expansionController.collapse();
-              },
+                  widget.service.salvarChecklist(widget.usina, widget.area, eq);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Checklist salvo!")),
+                  );
+                  // 🔹 Fecha o expansivo após salvar
+                  _expansionController.collapse();
+                },
+              ),
             ),
           ),
-          SizedBox(width: 16),
+
         ],
       ),
     );

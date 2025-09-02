@@ -72,6 +72,73 @@ class RelatorioView extends StatelessWidget {
     await Printing.sharePdf(bytes: await pdf.save(), filename: "relatorio_$usina.pdf");
   }
 
+  Future<void> gerarRelatorioMensalPDF(
+      BuildContext context, String usina, int mes, int ano) async {
+    final dados = await FirebaseChecklistService().carregarHistoricoMensal(usina, mes, ano);
+    final pdf = pw.Document();
+
+    final diasNoMes = List.generate(
+      DateUtils.getDaysInMonth(ano, mes),
+          (i) => (i + 1).toString().padLeft(2, "0"),
+    );
+
+    pdf.addPage(
+      pw.MultiPage(
+        build: (context) => [
+          pw.Text(
+            "Relatório de Pressões - $usina (${mes.toString().padLeft(2, "0")}/$ano)",
+            style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold),
+          ),
+          pw.SizedBox(height: 20),
+          pw.Table(
+            border: pw.TableBorder.all(color: PdfColors.grey, width: 0.5),
+            columnWidths: {
+              0: const pw.FixedColumnWidth(80),
+              1: const pw.FixedColumnWidth(60),
+            },
+            children: [
+              // Cabeçalho
+              pw.TableRow(
+                children: [
+                  pw.Center(child: pw.Text("Área", style: pw.TextStyle(fontWeight: pw.FontWeight.bold))),
+                  pw.Center(child: pw.Text("TAG", style: pw.TextStyle(fontWeight: pw.FontWeight.bold))),
+                  ...diasNoMes.map((d) =>
+                      pw.Center(child: pw.Text(d, style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold)))),
+                ],
+              ),
+
+              // Linhas de dados
+              for (var area in dados.keys)
+                for (var tag in dados[area]!.keys)
+                  pw.TableRow(
+                    children: [
+                      pw.Text(area),
+                      pw.Text(tag),
+                      ...diasNoMes.map((d) {
+                        final valores = dados[area]![tag]![d];
+                        if (valores == null) return pw.Text("-");
+                        return pw.Text(
+                          "R1:${valores[0].toStringAsFixed(1)} "
+                              "R2:${valores[1].toStringAsFixed(1)} "
+                              "R3:${valores[2].toStringAsFixed(1)}",
+                          style: const pw.TextStyle(fontSize: 8),
+                        );
+                      }),
+                    ],
+                  ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    await Printing.sharePdf(
+      bytes: await pdf.save(),
+      filename: "relatorio_${usina}_${mes}_${ano}.pdf",
+    );
+  }
+
+
   String _formatDateTime(DateTime? dateTime) {
     if (dateTime == null) return "-";
     return "${dateTime.day.toString().padLeft(2, '0')}/"
@@ -90,6 +157,16 @@ class RelatorioView extends StatelessWidget {
         backgroundColor: const Color(0xFF007C6C), // verde Vale
         foregroundColor: Colors.white,
         actions: [
+          /*
+          IconButton(
+            icon: const Icon(Icons.picture_as_pdf_outlined, color: Colors.white),
+            tooltip: "Exportar PDF Mensal",
+            onPressed: () async {
+              final now = DateTime.now();
+              await gerarRelatorioMensalPDF(context, usina, now.month, now.year);
+            },
+          ),
+          */
           IconButton(
             icon: const Icon(Icons.picture_as_pdf, color: Colors.white),
             tooltip: "Exportar PDF",

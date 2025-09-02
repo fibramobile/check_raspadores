@@ -27,7 +27,7 @@ class UsinaListView extends StatelessWidget {
         elevation: 2,
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout, color: Colors.white),
+            icon: const Icon(Icons.logout, color: const Color(0xFFF3A712)),// Colors.white),
             tooltip: "Sair",
             onPressed: () => _logout(context),
           ),
