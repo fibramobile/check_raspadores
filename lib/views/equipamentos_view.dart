@@ -1,14 +1,21 @@
+import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:intl/intl.dart';
 import '../models/equipamento.dart';
 import '../services/firebase_checklist_service.dart';
-
 
 class EquipamentosView extends StatelessWidget {
   final String usina;
   final String area;
   final FirebaseChecklistService service;
 
-  EquipamentosView({
+  const EquipamentosView({
+    super.key,
     required this.usina,
     required this.area,
     required this.service,
@@ -70,7 +77,6 @@ class EquipamentoTile extends StatefulWidget {
   final FirebaseChecklistService service;
   final String Function(DateTime?) formatDate;
 
-
   const EquipamentoTile({
     super.key,
     required this.equipamento,
@@ -95,6 +101,8 @@ class _EquipamentoTileState extends State<EquipamentoTile> {
   late double reservatorioPressao;
   late final ExpansionTileController _expansionController;
 
+  final TextEditingController _obsController = TextEditingController();
+  String? fotoUrl;
 
   @override
   void initState() {
@@ -107,8 +115,101 @@ class _EquipamentoTileState extends State<EquipamentoTile> {
     terceiroPressao = widget.equipamento.raspadorTerceiroPressao;
     reservatorioNA = widget.equipamento.reservatorioNA;
     reservatorioPressao = widget.equipamento.reservatorioPressao;
+
+    _obsController.text = widget.equipamento.observacao ?? "";
+    fotoUrl = widget.equipamento.fotoUrl;
     _expansionController = ExpansionTileController();
   }
+
+  Future<void> _pickAndUploadPhoto() async {
+    try {
+      print("📸 Iniciando seleção de imagem...");
+      final picker = ImagePicker();
+      XFile? picked;
+
+      if (kIsWeb) {
+        picked = await picker.pickImage(source: ImageSource.gallery);
+        print("🌐 (Web) Imagem selecionada: ${picked?.name}");
+      } else {
+        picked = await picker.pickImage(source: ImageSource.camera);
+        print("📱 (Mobile) Imagem capturada: ${picked?.path}");
+      }
+
+      if (picked == null) {
+        print("⚠️ Nenhuma imagem selecionada.");
+        return;
+      }
+
+      final storage = FirebaseStorage.instanceFor(bucket: "gs://check-raspadores");
+      final fileName = "${widget.equipamento.tag}_${DateTime.now().millisecondsSinceEpoch}.jpg";
+      final ref = storage.ref().child("checklist_fotos/$fileName");
+
+      final metadata = SettableMetadata(contentType: "image/jpeg");
+
+      if (kIsWeb) {
+        final bytes = await picked.readAsBytes();
+        print("🌐 (Web) Tamanho da imagem: ${bytes.lengthInBytes / 1024} KB");
+
+        if (bytes.lengthInBytes > 2 * 1024 * 1024) {
+          print("❌ Imagem muito grande (>2MB). Abortando upload.");
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Imagem muito grande, selecione outra.")),
+          );
+          return;
+        }
+
+        print("⬆️ (Web) Iniciando upload para Firebase Storage...");
+        await ref.putData(bytes, metadata);
+        print("✅ (Web) Upload concluído!");
+      } else {
+        final file = File(picked.path);
+        print("📱 (Mobile) Tamanho original: ${await file.length() / 1024} KB");
+
+        try {
+          final compressed = await FlutterImageCompress.compressWithFile(
+            file.absolute.path,
+            minWidth: 1024,
+            minHeight: 1024,
+            quality: 70,
+          );
+
+          if (compressed != null) {
+            print("📱 (Mobile) Tamanho comprimido: ${compressed.length / 1024} KB");
+            print("⬆️ (Mobile) Iniciando upload (comprimido)...");
+            await ref.putData(compressed, metadata);
+            print("✅ (Mobile) Upload concluído!");
+          } else {
+            print("⚠️ Compressão falhou, usando arquivo original.");
+            await ref.putFile(file, metadata);
+            print("✅ (Mobile) Upload concluído com arquivo original.");
+          }
+        } catch (e) {
+          print("❌ Erro ao comprimir: $e");
+          await ref.putFile(file, metadata);
+          print("✅ (Mobile) Upload concluído (sem compressão).");
+        }
+      }
+
+      // ✅ Agora pega a URL válida
+      final url = await ref.getDownloadURL();
+      print("✅ URL obtida: $url");
+
+      setState(() {
+        fotoUrl = url;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Imagem enviada com sucesso!")),
+      );
+    } catch (e, s) {
+      print("❌ Erro no processo de upload: $e");
+      print(s);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Erro ao enviar imagem: $e")),
+      );
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -140,20 +241,19 @@ class _EquipamentoTileState extends State<EquipamentoTile> {
                 style: TextStyle(
                   fontSize: 12,
                   color: Colors.grey[600],
-                  fontStyle: FontStyle.italic, // 👈 deixa diferenciado
+                  fontStyle: FontStyle.italic,
                 ),
               ),
             ),
-
             Row(
               children: [
-                const Text("R1 "),
+                const Text("R1"),
                 Icon(Icons.circle, size: 18, color: eq.statusPrimario),
                 const SizedBox(width: 8),
-                const Text("R2 "),
+                const Text("R2"),
                 Icon(Icons.circle, size: 18, color: eq.statusSecundario),
                 const SizedBox(width: 8),
-                const Text("R3 "),
+                const Text("R3"),
                 Icon(Icons.circle, size: 18, color: eq.statusTerceiro),
               ],
             ),
@@ -193,18 +293,80 @@ class _EquipamentoTileState extends State<EquipamentoTile> {
             reservatorioPressao,
             0.0,
             6.0,
-                //(val) => setState(() => reservatorioNA = val),
                 (val) => setState(() => reservatorioNA = val),
                 (v) => setState(() => reservatorioPressao = v),
           ),
+
+          Row(
+            children: [
+              StreamBuilder<Map<String, dynamic>?>(
+                stream: widget.service.getUltimaObservacao(widget.usina, widget.area, eq),
+                builder: (context, snap) {
+                  if (!snap.hasData) return const SizedBox();
+                  final obs = snap.data!;
+                  final texto = obs['texto'] ?? '';
+                  final usuario = obs['usuarioNome'] ?? obs['usuarioEmail'] ?? obs['usuarioId'] ?? 'Desconhecido';
+                  final createdAt = (obs['createdAt'] as Timestamp?)?.toDate();
+                  final dataFormatada = createdAt != null
+                      ? DateFormat("dd/MM/yy HH:mm").format(createdAt)
+                      : "--";
+
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Última observação:",
+                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black54),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          texto,
+                          style: const TextStyle(fontSize: 14, color: Colors.black87),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          "por $usuario em $dataFormatada",
+                          style: const TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+
+
+
+
+
+          // 🔹 Observações
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: TextField(
+              controller: _obsController,
+              maxLines: 3,
+              decoration: InputDecoration(
+                labelText: "Observações",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+          ),
+
           const SizedBox(height: 12),
+
+// 🔹 Botão Salvar
           Align(
             alignment: Alignment.centerRight,
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 12), // espaço extra no rodapé
+              padding: const EdgeInsets.only(bottom: 12),
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFF3A712),//const Color(0xFF007C6C),
+                  backgroundColor: const Color(0xFFF3A712),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -218,7 +380,8 @@ class _EquipamentoTileState extends State<EquipamentoTile> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                onPressed: () {
+                onPressed: () async {
+                  // 🔹 Atualiza pressões normalmente
                   eq.raspadorPrimarioNA = primarioNA;
                   eq.raspadorPrimarioPressao = primarioPressao;
                   eq.raspadorSecundarioNA = secundarioNA;
@@ -229,11 +392,25 @@ class _EquipamentoTileState extends State<EquipamentoTile> {
                   eq.reservatorioPressao = reservatorioPressao;
                   eq.updatedAt = DateTime.now();
 
+                  // 🔹 Salva checklist básico
                   widget.service.salvarChecklist(widget.usina, widget.area, eq);
+
+                  // 🔹 Salva observação em subcoleção (se tiver texto ou foto)
+                  if (_obsController.text.trim().isNotEmpty || fotoUrl != null) {
+                    await widget.service.salvarObservacao(
+                      widget.usina,
+                      widget.area,
+                      eq,
+                      _obsController.text.trim(),
+                      fotoUrl: fotoUrl,   // agora bate com o parâmetro nomeado
+                    );
+                    _obsController.clear();
+                    setState(() => fotoUrl = null);
+                  }
+
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text("Checklist salvo!")),
                   );
-                  // 🔹 Fecha o expansivo após salvar
                   _expansionController.collapse();
                 },
               ),
@@ -247,7 +424,7 @@ class _EquipamentoTileState extends State<EquipamentoTile> {
 
   Widget _buildChecklistOption(
       String label,
-      bool isAtivo, // true = habilitado
+      bool isAtivo,
       double pressao,
       double min,
       double max,
@@ -255,10 +432,9 @@ class _EquipamentoTileState extends State<EquipamentoTile> {
       Function(double) onPressaoChanged,
       ) {
     Color getCorPressao() {
-      if (!isAtivo) return Colors.grey; // se desmarcado, fica cinza
+      if (!isAtivo) return Colors.grey;
       if (label.contains("Reservatório")) {
         if (pressao < 1.0) return Colors.red;
-      //  if (pressao > 4.0) return Colors.orangeAccent;
         return Colors.green;
       } else {
         if (pressao < 0.5) return Colors.red;
@@ -270,8 +446,8 @@ class _EquipamentoTileState extends State<EquipamentoTile> {
     final cor = getCorPressao();
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-      padding: const EdgeInsets.all(8),
+      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+      padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
         borderRadius: BorderRadius.circular(12),
@@ -282,59 +458,44 @@ class _EquipamentoTileState extends State<EquipamentoTile> {
         children: [
           Row(
             children: [
-              // 🔹 Checkbox habilita/desabilita
               if (!label.contains("Reservatório"))
-              Checkbox(
-                value: isAtivo,
-                onChanged: (val) => onAtivoChanged(val ?? true),
-              ),
-
-              // 🔹 Nome do item
+                Checkbox(
+                  value: isAtivo,
+                  onChanged: (val) => onAtivoChanged(val ?? true),
+                ),
               Expanded(
                 child: Text(
                   label,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 14,
+                    fontSize: 12,
                   ),
                 ),
               ),
-
-              // 🔹 Botão de diminuir
               IconButton(
                 icon: const Icon(Icons.remove_circle),
                 color: cor,
                 onPressed: !isAtivo || pressao <= min
                     ? null
-                    : () => onPressaoChanged(
-                  (pressao - 0.1).clamp(min, max),
-                ),
+                    : () => onPressaoChanged((pressao - 0.1).clamp(min, max)),
               ),
-
-              // 🔹 Valor atual
               Text(
                 "${pressao.toStringAsFixed(1)} kgf",
                 style: TextStyle(
                   color: cor,
                   fontWeight: FontWeight.bold,
-                  fontSize: 14,
+                  fontSize: 12,
                 ),
               ),
-
-              // 🔹 Botão de aumentar
               IconButton(
                 icon: const Icon(Icons.add_circle),
                 color: cor,
                 onPressed: !isAtivo || pressao >= max
                     ? null
-                    : () => onPressaoChanged(
-                  (pressao + 0.1).clamp(min, max),
-                ),
+                    : () => onPressaoChanged((pressao + 0.1).clamp(min, max)),
               ),
             ],
           ),
-
-          // 🔹 Slider opcional abaixo
           if (isAtivo)
             SliderTheme(
               data: SliderTheme.of(context).copyWith(

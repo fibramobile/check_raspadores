@@ -249,4 +249,49 @@ class FirebaseChecklistService {
   }
 
 
+  Future<void> salvarObservacao(
+      String usina,
+      String area,
+      Equipamento eq,
+      String texto, {
+        String? fotoUrl,
+      }) async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    final ref = FirebaseFirestore.instance
+        .collection("usinas").doc(usina)
+        .collection("areas").doc(area)
+        .collection("equipamentos").doc(eq.tag)
+        .collection("observacoes");
+
+    await ref.add({
+      "texto": texto,
+      "fotoUrl": fotoUrl,
+      "usuarioId": user?.uid,
+      "usuarioEmail": user?.email,
+      "usuarioNome": user?.displayName,
+      "createdAt": FieldValue.serverTimestamp(),
+    });
+  }
+
+  Stream<Map<String, dynamic>?> getUltimaObservacao(
+      String usina,
+      String area,
+      Equipamento eq,
+      ) {
+    final ref = FirebaseFirestore.instance
+        .collection("usinas").doc(usina)
+        .collection("areas").doc(area)
+        .collection("equipamentos").doc(eq.tag)
+        .collection("observacoes")
+        .orderBy("createdAt", descending: true)
+        .limit(1);
+
+    return ref.snapshots().map((snap) {
+      if (snap.docs.isEmpty) return null;
+      return snap.docs.first.data();
+    });
+  }
+
+
 }

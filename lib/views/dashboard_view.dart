@@ -11,7 +11,8 @@ class DashboardView extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
       appBar: AppBar(
-        title: Text("Dashboard - $usina"),
+        title: Text("Dashboard - $usina", style: TextStyle(color: Colors.white
+        ),),
         backgroundColor: const Color(0xFF007C6C),
         elevation: 4,
         centerTitle: true,

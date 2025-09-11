@@ -4,6 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Equipamento {
   final String tag;
   final String area;
+
+  String? observacao;
+  String? fotoUrl;
+
+
   bool raspadorPrimarioNA;
   double raspadorPrimarioPressao;
 
